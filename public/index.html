@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tetris Tournament Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar glass-panel">
+            <div class="logo">
+                <h2>TETRIS <span>VIETNAM</span></h2>
+            </div>
+            <ul class="nav-links">
+                <li class="active" data-tab="dashboard" onclick="ui.switchTab('dashboard')">Dashboard</li>
+                <li data-tab="tournament-detail" id="nav-detail" style="display:none;">Tournament Detail</li>
+                <li data-tab="player-career" onclick="ui.switchTab('player-career')">Player Career</li>
+            </ul>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+
+            <!-- Dashboard Tab -->
+            <section id="tab-dashboard" class="tab-pane active">
+                <div class="header">
+                    <h1>Tournament Dashboard</h1>
+                    <button class="btn primary" onclick="ui.toggleCreateModal(true)">+ New Tournament</button>
+                </div>
+
+                <div class="tournaments-grid" id="tournaments-list">
+                    <!-- Tournament cards injected here -->
+                </div>
+            </section>
+
+            <!-- Tournament Detail Tab -->
+            <section id="tab-tournament-detail" class="tab-pane">
+                <div class="header">
+                    <button class="btn text" onclick="ui.switchTab('dashboard')">← Back</button>
+                    <h1 id="detail-title">Tournament Name</h1>
+                    <span id="detail-status" class="badge">STATUS</span>
+                </div>
+
+                <div class="detail-actions" id="detail-actions">
+                    <button class="btn secondary" id="btn-generate-bracket" onclick="api.generateBracket()">Generate
+                        Bracket</button>
+                </div>
+
+                <div class="content-split">
+                    <!-- Matches List -->
+                    <div class="matches-panel glass-panel">
+                        <h2>Matches</h2>
+                        <div id="matches-list" class="matches-list">
+                            <!-- Match cards injected here -->
+                        </div>
+                    </div>
+
+                    <!-- Rankings List -->
+                    <div class="rankings-panel glass-panel">
+                        <h2>Rankings</h2>
+                        <div id="rankings-list" class="rankings-list">
+                            <!-- Ranking cards injected here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Player Career Tab -->
+            <section id="tab-player-career" class="tab-pane">
+                <div class="header">
+                    <h1>Player Career</h1>
+                </div>
+
+                <div class="glass-panel" style="padding: 1.5rem; margin-bottom: 2rem;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h2>All Players</h2>
+                        <div style="display: flex; gap: 1rem;">
+                            <input type="number" id="search-player-id" placeholder="Filter by Player ID"
+                                style="width: 200px;">
+                            <button class="btn primary" onclick="api.searchPlayer()">Search Details</button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table" id="players-table">
+                            <thead>
+                                <tr>
+                                    <th onclick="ui.sortPlayers('id')">ID ↕</th>
+                                    <th onclick="ui.sortPlayers('name')">Name ↕</th>
+                                    <th onclick="ui.sortPlayers('matchWins')">Match Wins ↕</th>
+                                    <th onclick="ui.sortPlayers('matchLosses')">Match Losses ↕</th>
+                                    <th onclick="ui.sortPlayers('avgApm')">Avg APM ↕</th>
+                                    <th onclick="ui.sortPlayers('avgPps')">Avg PPS ↕</th>
+                                    <th onclick="ui.sortPlayers('avgVs')">Avg VS ↕</th>
+                                </tr>
+                            </thead>
+                            <tbody id="players-list">
+                                <!-- Players injected here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="player-career-result" class="career-result glass-panel" style="display: none;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h2 id="career-name" class="career-title" style="margin-bottom: 0;">Player Name</h2>
+                        <button class="btn text"
+                            onclick="document.getElementById('player-career-result').style.display='none'">Close</button>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <span class="label">Match Wins</span>
+                            <span class="value" id="c-match-wins">0</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="label">Match Losses</span>
+                            <span class="value" id="c-match-losses">0</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="label">Game Wins</span>
+                            <span class="value" id="c-game-wins">0</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="label">Avg APM</span>
+                            <span class="value" id="c-apm">0.00</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="label">Avg PPS</span>
+                            <span class="value" id="c-pps">0.00</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="label">Avg VS</span>
+                            <span class="value" id="c-vs">0.00</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Create Tournament Modal -->
+    <div class="modal-overlay" id="create-modal">
+        <div class="modal glass-panel">
+            <div class="modal-header">
+                <h2>Create New Tournament</h2>
+                <button class="close-btn" onclick="ui.toggleCreateModal(false)">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Tournament Name</label>
+                    <input type="text" id="form-name" placeholder="Enter name">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Game</label>
+                        <select id="form-game">
+                            <option value="TETRIO">TETRIO</option>
+                            <option value="JSTRIS">JSTRIS</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select id="form-type">
+                            <option value="SINGLE">Single Elimination</option>
+                            <option value="DOUBLE">Double Elimination</option>
+                            <option value="ROUND_ROBIN">Round Robin</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Participants (One name per line)</label>
+                    <textarea id="form-participants" rows="6"
+                        placeholder="Blank&#10;ShardNguyen&#10;Fire&#10;2qb"></textarea>
+                    <small>Seeds will be assigned automatically based on line order.</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn text" onclick="ui.toggleCreateModal(false)">Cancel</button>
+                <button class="btn primary" onclick="api.createTournament()">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Score Modal -->
+    <div class="modal-overlay" id="score-modal">
+        <div class="modal glass-panel">
+            <div class="modal-header">
+                <h2>Update Match Score</h2>
+                <button class="close-btn" onclick="ui.toggleScoreModal(false)">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="score-match-id">
+                <input type="hidden" id="score-p1-id">
+                <input type="hidden" id="score-p2-id">
+
+                <div class="score-inputs">
+                    <div class="player-score">
+                        <label id="score-p1-name">Player 1</label>
+                        <input type="number" id="score-p1" value="0" min="0">
+                    </div>
+                    <div class="vs-text">VS</div>
+                    <div class="player-score">
+                        <label id="score-p2-name">Player 2</label>
+                        <input type="number" id="score-p2" value="0" min="0">
+                    </div>
+                </div>
+
+                <div class="stats-section">
+                    <h3>Game Stats (Optional)</h3>
+                    <p class="text-muted"><small>Enter average stats for the entire match</small></p>
+                    <div class="stats-grid-input">
+                        <div><label>P1 APM</label><input type="number" id="stat-p1-apm" step="0.1"></div>
+                        <div><label>P1 PPS</label><input type="number" id="stat-p1-pps" step="0.01"></div>
+                        <div><label>P1 VS</label><input type="number" id="stat-p1-vs" step="0.1"></div>
+
+                        <div><label>P2 APM</label><input type="number" id="stat-p2-apm" step="0.1"></div>
+                        <div><label>P2 PPS</label><input type="number" id="stat-p2-pps" step="0.01"></div>
+                        <div><label>P2 VS</label><input type="number" id="stat-p2-vs" step="0.1"></div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn text" onclick="ui.toggleScoreModal(false)">Cancel</button>
+                <button class="btn primary" id="btn-save-score" onclick="api.updateScore()">Save & Complete</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+</body>
+
+</html>

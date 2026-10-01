@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum TournamentStatus {
+  DRAFT
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum TournamentType {
+  SINGLE
+  DOUBLE
+  ROUND_ROBIN
+}
+
+enum GameType {
+  TETRIO
+  JSTRIS
+}
+
+enum MatchStatus {
+  PENDING
+  COMPLETED
+}
+
+model Tournament {
+  id           Int      @id @default(autoincrement())
+  name         String
+  game         GameType
+  status       TournamentStatus @default(DRAFT)
+  type         TournamentType
+  createdAt    DateTime @default(now())
+  
+  participants TournamentParticipant[]
+  matches      Match[]
+}
+
+model Player {
+  id           Int      @id @default(autoincrement())
+  name         String   @unique
+  
+  // Thông số Career (Tự động cập nhật)
+  matchWins    Int      @default(0)
+  matchLosses  Int      @default(0)
+  gameWins     Int      @default(0)
+  gameLosses   Int      @default(0)
+  avgApm       Float    @default(0)
+  avgPps       Float    @default(0)
+  avgVs        Float    @default(0)
+  
+  tournaments  TournamentParticipant[]
+  gameStats    GameStats[]
+  matchesAsP1  Match[]  @relation("MatchPlayer1")
+  matchesAsP2  Match[]  @relation("MatchPlayer2")
+}
+model TournamentParticipant {
+  id           Int      @id @default(autoincrement())
+  tournamentId Int
+  playerId     Int
+  seed         Int
+  finalRank    Int?
+  
+  tournament   Tournament @relation(fields: [tournamentId], references: [id])
+  player       Player     @relation(fields: [playerId], references: [id])
+
+  @@index([tournamentId])
+}
+model Match {
+  id               Int      @id @default(autoincrement())
+  tournamentId     Int
+  round            Int
+  isWinnersBracket Boolean  @default(true)
+  player1Id        Int?     // Có thể null nếu đang chờ người thắng từ trận trước
+  player2Id        Int?
+  score1           Int      @default(0)
+  score2           Int      @default(0)
+  status           MatchStatus   @default(PENDING)
+  nextMatchId      Int?     // Trận tiếp theo cho người thắng
+  nextLoserMatchId Int?     // Trận tiếp theo cho người thua (Double Elim)
+  
+  tournament       Tournament @relation(fields: [tournamentId], references: [id])
+  player1          Player?    @relation("MatchPlayer1", fields: [player1Id], references: [id])
+  player2          Player?    @relation("MatchPlayer2", fields: [player2Id], references: [id])
+  games            Game[]
+
+  @@index([tournamentId])
+}
+model Game {
+  id         Int         @id @default(autoincrement())
+  matchId    Int
+  gameNumber Int
+  
+  match      Match       @relation(fields: [matchId], references: [id])
+  stats      GameStats[]
+}
+model GameStats {
+  id         Int      @id @default(autoincrement())
+  gameId     Int
+  playerId   Int
+  apm        Float?
+  pps        Float?
+  vs         Float?
+  isWinner   Boolean  @default(false)
+  
+  game       Game     @relation(fields: [gameId], references: [id])
+  player     Player   @relation(fields: [playerId], references: [id])
+
+  @@index([playerId])
+}

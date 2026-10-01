@@ -1,0 +1,288 @@
+@baseUrl = http://localhost:3000/api
+
+### Tạo giải đấu Round Robin
+POST {{baseUrl}}/tournaments
+Content-Type: application/json
+
+{
+    "name": "Vietnam Tetris Championship 2027",
+    "game": "TETRIO",
+    "type": "ROUND_ROBIN",
+    "participants": [
+        { "name": "Blank", "seed": 1 },
+        { "name": "ShardNguyen", "seed": 2 },
+        { "name": "Lightningreed", "seed": 3 },
+        { "name": "Fire", "seed": 4 }
+    ]
+}
+
+### Tạo bracket cho giải đấu Round Robin
+POST {{baseUrl}}/tournaments/3/generate-bracket
+
+### Xem bracket của giải đấu Round Robin
+GET {{baseUrl}}/tournaments/3/bracket
+
+### Cập nhật kết quả trận đấu có ID = 1
+PUT {{baseUrl}}/matches/1/score
+Content-Type: application/json
+
+{
+    "score1": 3,
+    "score2": 0,
+    "status": "COMPLETED"
+}
+
+### Cập nhật thông số trận đấu có ID = 1
+POST {{baseUrl}}/matches/1/games
+Content-Type: application/json
+
+{
+    "games": [
+        {
+            "stats": [
+                { "playerId": 1, "apm": 110.5, "pps": 3.12, "vs": 250, "isWinner": true },
+                { "playerId": 2, "apm": 95.0,  "pps": 1.70, "vs": 180, "isWinner": false }
+            ]
+        },
+        {
+            "stats": [
+                { "playerId": 1, "apm": 125.0, "pps": 3.30, "vs": 270, "isWinner": true },
+                { "playerId": 2, "apm": 100.2, "pps": 2.2, "vs": 195, "isWinner": false }
+            ]
+        },
+        {
+            "stats": [
+                { "playerId": 1, "apm": 160.0, "pps": 3.15, "vs": 350, "isWinner": true },
+                { "playerId": 2, "apm": 130.2, "pps": 2.45, "vs": 269, "isWinner": false }
+            ]
+        }
+    ]
+}
+
+### Cập nhật kết quả trận đấu có ID = 2
+PUT {{baseUrl}}/matches/2/score
+Content-Type: application/json
+
+{
+    "score1": 3,
+    "score2": 1,
+    "status": "COMPLETED"
+}
+
+### Cập nhật thông số trận đấu có ID = 2
+POST {{baseUrl}}/matches/2/games
+Content-Type: application/json
+
+{
+    "games": [
+        {
+            "stats": [
+                { "playerId": 4, "apm": 110.5, "pps": 2.50, "vs": 220.0, "isWinner": true },
+                { "playerId": 3, "apm": 80.0,  "pps": 2.10, "vs": 168.0, "isWinner": false }
+            ]
+        },
+        {
+            "stats": [
+                { "playerId": 4, "apm": 88.2, "pps": 2.30, "vs": 270.0, "isWinner": true },
+                { "playerId": 3, "apm": 74.2, "pps": 1.93, "vs": 154.6, "isWinner": false }
+            ]
+        },
+        {
+            "stats": [
+                { "playerId": 4, "apm": 98.9, "pps": 2.20, "vs": 211.6, "isWinner": false },
+                { "playerId": 3, "apm": 110.7, "pps": 2.45, "vs": 233.4, "isWinner": true }
+            ]
+        },
+        {
+            "stats": [
+                { "playerId": 4, "apm": 125.8, "pps": 2.73, "vs": 266.7, "isWinner": true },
+                { "playerId": 3, "apm": 103.7, "pps": 2.45, "vs": 244.7, "isWinner": false }
+            ]
+        }
+    ]
+}
+
+### Cập nhật kết quả trận đấu có ID = 3
+PUT {{baseUrl}}/matches/3/score
+Content-Type: application/json
+
+{
+    "score1": 3,
+    "score2": 1,
+    "status": "COMPLETED"
+}
+
+### Cập nhật thông số trận đấu có ID = 3
+POST {{baseUrl}}/matches/3/games
+Content-Type: application/json
+
+{
+    "games": [
+        {
+            "stats": [
+                { "playerId": 1, "apm": 186.4, "pps": 3.71, "vs": 382.7, "isWinner": true },
+                { "playerId": 4, "apm": 140.8,  "pps": 2.65, "vs": 297.4, "isWinner": false }
+            ]
+        },
+        {
+            "stats": [
+                { "playerId": 1, "apm": 139.9, "pps": 2.86, "vs": 288.7, "isWinner": false },
+                { "playerId": 4, "apm": 148.7, "pps": 2.52, "vs": 300.3, "isWinner": true }
+            ]
+        },
+        {
+            "stats": [
+                { "playerId": 1, "apm": 155.6, "pps": 3.45, "vs": 346.2, "isWinner": true },
+                { "playerId": 4, "apm": 112.8, "pps": 2.45, "vs": 250.4, "isWinner": false }
+            ]
+        },
+        {
+            "stats": [
+                { "playerId": 1, "apm": 144.3, "pps": 3.10, "vs": 310.62, "isWinner": true },
+                { "playerId": 4, "apm": 123.69, "pps": 2.82, "vs": 286.67, "isWinner": false }
+            ]
+        }
+    ]
+}
+
+### Cập nhật kết quả trận đấu có ID = 4
+PUT {{baseUrl}}/matches/4/score
+Content-Type: application/json
+
+{
+    "score1": 2,
+    "score2": 3,
+    "status": "COMPLETED"
+}
+
+### Cập nhật thông số trận đấu có ID = 4
+POST {{baseUrl}}/matches/4/games
+Content-Type: application/json
+
+{
+    "games": [
+        {
+            "stats": [
+                { "playerId": 3, "apm": 100.2, "pps": 2.26, "vs": 228.6, "isWinner": true },
+                { "playerId": 2, "apm": 98.74,  "pps": 2.03, "vs": 208.63, "isWinner": false }
+            ]
+        },
+        {
+            "stats": [
+                { "playerId": 3, "apm": 83.21, "pps": 2.02, "vs": 201.67, "isWinner": false },
+                { "playerId": 2, "apm": 99.68, "pps": 2.16, "vs": 233.54, "isWinner": true }
+            ]
+        },
+        {
+            "stats": [
+                { "playerId": 3, "apm": 106.85, "pps": 2.51, "vs": 239.89, "isWinner": true },
+                { "playerId": 2, "apm": 108.87, "pps": 2.45, "vs": 231.69, "isWinner": false }
+            ]
+        },
+        {
+            "stats": [
+                { "playerId": 3, "apm": 106.85, "pps": 2.15, "vs": 240.62, "isWinner": false },
+                { "playerId": 2, "apm": 123.69, "pps": 2.10, "vs": 256.67, "isWinner": true }
+            ]
+        },
+        {
+            "stats": [
+                { "playerId": 3, "apm": 67.85, "pps": 1.96, "vs": 139.52, "isWinner": false },
+                { "playerId": 2, "apm": 89.86, "pps": 2.01, "vs": 178.46, "isWinner": true }
+            ]
+        }
+    ]
+}
+
+### Cập nhật kết quả trận đấu có ID = 5
+PUT {{baseUrl}}/matches/5/score
+Content-Type: application/json
+
+{
+    "score1": 3,
+    "score2": 0,
+    "status": "COMPLETED"
+}
+
+### Cập nhật thông số trận đấu có ID = 5
+POST {{baseUrl}}/matches/5/games
+Content-Type: application/json
+
+{
+    "games": [
+        {
+            "stats": [
+                { "playerId": 1, "apm": 150.2, "pps": 3.26, "vs": 299.75, "isWinner": true },
+                { "playerId": 3, "apm": 58.74,  "pps": 2.03, "vs": 127.74, "isWinner": false }
+            ]
+        },
+        {
+            "stats": [
+                { "playerId": 1, "apm": 123.21, "pps": 3.02, "vs": 271.61, "isWinner": true },
+                { "playerId": 3, "apm": 92.68, "pps": 2.26, "vs": 220.27, "isWinner": false }
+            ]
+        },
+        {
+            "stats": [
+                { "playerId": 1, "apm": 174.74, "pps": 2.51, "vs": 330.75, "isWinner": true },
+                { "playerId": 3, "apm": 128.87, "pps": 2.45, "vs": 261.69, "isWinner": false }
+            ]
+        }
+    ]
+}
+
+### Cập nhật kết quả trận đấu có ID = 6
+PUT {{baseUrl}}/matches/6/score
+Content-Type: application/json
+
+{
+    "score1": 1,
+    "score2": 3,
+    "status": "COMPLETED"
+}
+
+### Cập nhật thông số trận đấu có ID = 6
+POST {{baseUrl}}/matches/6/games
+Content-Type: application/json
+
+{
+    "games": [
+        {
+            "stats": [
+                { "playerId": 2, "apm": 73.02, "pps": 1.96, "vs": 188.64, "isWinner": true },
+                { "playerId": 4, "apm": 71.98,  "pps": 1.87, "vs": 168.74, "isWinner": false }
+            ]
+        },
+        {
+            "stats": [
+                { "playerId": 2, "apm": 80.74, "pps": 2.02, "vs": 198.75, "isWinner": false },
+                { "playerId": 4, "apm": 112.94, "pps": 2.16, "vs": 243.21, "isWinner": true }
+            ]
+        },
+        {
+            "stats": [
+                { "playerId": 2, "apm": 106.85, "pps": 2.01, "vs": 229.89, "isWinner": false },
+                { "playerId": 4, "apm": 118.87, "pps": 2.45, "vs": 251.69, "isWinner": true }
+            ]
+        },
+        {
+            "stats": [
+                { "playerId": 2, "apm": 87.75, "pps": 1.86, "vs": 180.62, "isWinner": false },
+                { "playerId": 4, "apm": 123.69, "pps": 2.10, "vs": 256.67, "isWinner": true }
+            ]
+        }
+    ]
+}
+
+### Xem Bảng xếp hạng chung cuộc (Rankings)
+GET {{baseUrl}}/tournaments/3/rankings
+
+### Xem thông số sự nghiệp (Career Stats) của các người chơi với playerId
+### player1
+GET {{baseUrl}}/players/1/career
+### player2
+GET {{baseUrl}}/players/2/career
+### player3
+GET {{baseUrl}}/players/3/career
+### player4
+GET {{baseUrl}}/players/4/career

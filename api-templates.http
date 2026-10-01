@@ -1,0 +1,100 @@
+### =========================================================================
+### TỔNG HỢP API MẪU (TEMPLATE) CHO BACKEND TETRIS TOURNAMENT
+### (Sử dụng extension REST Client trên VSCode - Nhấn "Send Request" để test)
+### =========================================================================
+
+@baseUrl = http://localhost:3000/api
+
+### -----------------------------------------------------------------------
+### 1. TOURNAMENTS (GIẢI ĐẤU)
+### -----------------------------------------------------------------------
+
+### 1.1 Tạo giải đấu mới
+# type có thể là: "SINGLE", "DOUBLE", "ROUND_ROBIN"
+# game có thể là: "TETRIO", "JSTRIS"
+POST {{baseUrl}}/tournaments
+Content-Type: application/json
+
+{
+    "name": "Vietnam Tetris Championship 2027",
+    "game": "TETRIO",
+    "type": "DOUBLE",
+    "participants": [
+        { "name": "Blank", "seed": 1 },
+        { "name": "ShardNguyen", "seed": 2 },
+        { "name": "Lightningreed", "seed": 3 },
+        { "name": "Fire", "seed": 4 }
+    ]
+}
+
+### 1.2 Generate Bracket (Khởi tạo toàn bộ các trận đấu của giải)
+# ID giải đấu điền vào đường dẫn (ví dụ: 1)
+POST {{baseUrl}}/tournaments/1/generate-bracket
+
+### 1.3 Xem Bracket (Lịch thi đấu & Cây giải đấu)
+# Trả về toàn bộ danh sách Match thuộc giải đấu
+GET {{baseUrl}}/tournaments/1/bracket
+
+### 1.4 Xem Bảng xếp hạng chung cuộc (Rankings)
+# Trả về danh sách xếp hạng từ top 1 xuống dưới. 
+# API này cũng sẽ tự động lưu finalRank vào Database cho từng người.
+GET {{baseUrl}}/tournaments/1/rankings
+
+
+### -----------------------------------------------------------------------
+### 2. MATCHES (TRẬN ĐẤU & THÔNG SỐ)
+### -----------------------------------------------------------------------
+
+### 2.1 Xem lịch sử toàn bộ các trận đấu đã hoàn thành (Match History)
+# Có thể filter theo game: ?game=TETRIO hoặc ?game=JSTRIS
+GET {{baseUrl}}/matches?game=TETRIO
+
+### 2.2 Cập nhật tỉ số và kết thúc một trận đấu
+# status có thể là: "PENDING" hoặc "COMPLETED"
+# Nếu là COMPLETED, hệ thống sẽ tự đưa người thắng/thua vào nhánh tiếp theo
+PUT {{baseUrl}}/matches/1/score
+Content-Type: application/json
+
+{
+    "score1": 5,
+    "score2": 3,
+    "status": "COMPLETED"
+}
+
+### 2.3 Thêm thông số chi tiết của từng Game trong Trận đấu (Nhập APM/PPS/VS)
+# Cho phép gửi 1 mảng games cùng lúc nhờ cơ chế Nested Create mới tối ưu.
+POST {{baseUrl}}/matches/1/games
+Content-Type: application/json
+
+{
+    "games": [
+        {
+            "stats": [
+                { "playerId": 1, "apm": 110.5, "pps": 3.12, "vs": 250, "isWinner": true },
+                { "playerId": 2, "apm": 95.0,  "pps": 2.80, "vs": 180, "isWinner": false }
+            ]
+        },
+        {
+            "stats": [
+                { "playerId": 1, "apm": 125.0, "pps": 3.30, "vs": 270, "isWinner": true },
+                { "playerId": 2, "apm": 100.2, "pps": 2.95, "vs": 195, "isWinner": false }
+            ]
+        }
+    ]
+}
+
+
+### -----------------------------------------------------------------------
+### 3. PLAYERS (NGƯỜI CHƠI & CAREER)
+### -----------------------------------------------------------------------
+
+### 3.1 Xem thông số sự nghiệp (Career Stats) của 1 người chơi
+# Có thể filter: ?tournamentId=1 hoặc ?startDate=...&endDate=...
+# Chạy API này cũng sẽ tự động trigger tính toán và lưu stats vào db.
+GET {{baseUrl}}/players/1/career
+
+### 3.2 Lọc Career Stats theo ID giải đấu
+GET {{baseUrl}}/players/1/career?tournamentId=1
+
+### 3.3 Lọc Career Stats theo thời gian
+GET {{baseUrl}}/players/1/career?startDate=2026-01-01T00:00:00Z&endDate=2026-12-31T23:59:59Z
